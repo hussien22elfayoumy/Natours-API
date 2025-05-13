@@ -1,14 +1,13 @@
 import dotenv from 'dotenv';
-dotenv.config();
 
 import express from 'express';
 import morgan from 'morgan';
 import tourRouter from './routes/tourRoute.js';
 import userRouter from './routes/userRoute.js';
 
+dotenv.config();
 const app = express();
 
-console.log(process.env.NODE_ENV);
 // 1) Middlewares
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));

@@ -6,7 +6,7 @@ const __fileName = fileURLToPath(import.meta.url);
 const __dirName = dirname(__fileName);
 
 const tours = JSON.parse(
-  fs.readFileSync(`${__dirName}/../dev-data/data/tours-simple.json`, 'utf-8')
+  fs.readFileSync(`${__dirName}/../dev-data/data/tours-simple.json`, 'utf-8'),
 );
 
 export const getAllTours = (req, res) => {
