@@ -27,6 +27,63 @@ const getAllTours = (req, res) => {
   });
 };
 
+const createTour = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defiend',
+  });
+};
+const getTour = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defiend',
+  });
+};
+const updateTour = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defiend',
+  });
+};
+const deleteTour = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defiend',
+  });
+};
+
+const getAllUsers = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defiend',
+  });
+};
+const createUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defiend',
+  });
+};
+const getUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defiend',
+  });
+};
+const updateUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defiend',
+  });
+};
+
+const deleteUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defiend',
+  });
+};
+
 // 2) Routes
 app.route('/api/v1/tours').get(getAllTours).post(createTour);
 app
@@ -34,6 +91,13 @@ app
   .get(getTour)
   .patch(updateTour)
   .delete(deleteTour);
+
+app.route('/api/v1/users').get(getAllUsers).post(createUser);
+app
+  .route('/api/v1/users/:id')
+  .get(getUser)
+  .patch(updateUser)
+  .delete(deleteUser);
 
 // 3) Start the server
 const PORT = 8000;
