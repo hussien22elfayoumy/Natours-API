@@ -1,13 +1,21 @@
-import express from 'express';
+import dotenv from 'dotenv';
+dotenv.config();
 
+import express from 'express';
 import morgan from 'morgan';
 import tourRouter from './routes/tourRoute.js';
 import userRouter from './routes/userRoute.js';
 
 const app = express();
 
+console.log(process.env.NODE_ENV);
 // 1) Middlewares
-app.use(morgan('dev')); // TIP logger function logs request informaiton
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
+
+// TIP logger function logs request informaiton
+
 app.use(express.json()); // TIP: Add the body property to the incoming reqest in express
 
 // 2) Routes
