@@ -1,19 +1,10 @@
-import fs from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __fileName = fileURLToPath(import.meta.url);
-const __dirName = dirname(__fileName);
-
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirName}/../dev-data/data/tours-simple.json`, 'utf-8'),
-);
+import Tour from '../models/tourModel.js';
 
 export const getAllTours = (req, res) => {
   res.status(200).json({
     message: 'sucess',
     data: {
-      tours: tours,
+      // tours: tours,
     },
   });
 };
