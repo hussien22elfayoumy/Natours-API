@@ -9,18 +9,31 @@ export const getAllTours = (req, res) => {
   });
 };
 
-export const createTour = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defiend',
-  });
+export const createTour = async (req, res) => {
+  try {
+    const newTour = await Tour.create(req.body);
+
+    res.status(201).json({
+      status: 'sucess',
+      data: {
+        tour: newTour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: 'Invalid data sent!',
+    });
+  }
 };
+
 export const getTour = (req, res) => {
   res.status(500).json({
     status: 'error',
     message: 'This route is not yet defiend',
   });
 };
+
 export const updateTour = (req, res) => {
   res.status(500).json({
     status: 'error',
