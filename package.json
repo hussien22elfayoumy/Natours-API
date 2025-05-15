@@ -9,7 +9,9 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "format": "prettier --check .",
-    "format:fix": "prettier --write ."
+    "format:fix": "prettier --write .",
+    "seed:import": "node ./scripts/seed.js --import",
+    "seed:delete": "node ./scripts/seed.js --delete"
   },
   "repository": {
     "type": "git",
