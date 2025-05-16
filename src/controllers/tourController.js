@@ -4,6 +4,7 @@ export const getAllTours = async (req, res) => {
   try {
     console.log(req.query);
     // Build the query
+    // 1A) Filtering
     const queryObj = { ...req.query };
     const excludedFields = ['page', 'limit', 'sort', 'fields'];
     excludedFields.forEach((field) => delete queryObj[field]);
@@ -16,10 +17,22 @@ export const getAllTours = async (req, res) => {
 		so we gonna solve this problem
 		*/
 
+    // 1B) Adbanced filtering
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
-    const query = Tour.find(JSON.parse(queryStr));
+    let query = Tour.find(JSON.parse(queryStr));
+
+    // 3) Sorting
+    if (req.query.sort) {
+      const sortBy = req.query.sort.replaceAll(',', ' ');
+      query = query.sort(sortBy);
+
+      // if you want decending use (-) before the field
+      // to sort with multi falue in mongo  sort('price duration') in url sort=price,duration
+    } else {
+      query = query.sort('-createdAt');
+    }
 
     // Execute the query
     const tours = await query;
