@@ -1,11 +1,13 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import morgan from 'morgan';
+import qs from 'qs';
 import tourRouter from './routes/tourRoute.js';
 import userRouter from './routes/userRoute.js';
 
 dotenv.config();
 const app = express();
+app.set('query parser', (str) => qs.parse(str));
 
 // 1) Middlewares
 if (process.env.NODE_ENV === 'development') {

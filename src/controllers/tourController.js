@@ -2,12 +2,24 @@ import Tour from '../models/tourModel.js';
 
 export const getAllTours = async (req, res) => {
   try {
+    console.log(req.query);
     // Build the query
     const queryObj = { ...req.query };
     const excludedFields = ['page', 'limit', 'sort', 'fields'];
     excludedFields.forEach((field) => delete queryObj[field]);
 
-    const query = Tour.find(queryObj);
+    /* 
+		mongodb filtring
+		Tour.find({difficulty: 'easy', duration: {$gte: 5}})
+		the queryObj
+		Tour.find({difficulty: 'easy', duration: {gte: 5}})
+		so we gonna solve this problem
+		*/
+
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    const query = Tour.find(JSON.parse(queryStr));
 
     // Execute the query
     const tours = await query;
