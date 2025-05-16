@@ -1,5 +1,12 @@
 import Tour from '../models/tourModel.js';
 
+export const aliasTopTours = (req, res, next) => {
+  req.url =
+    '/?sort=-ratingsAverage,price&fields=ratingsAverage,price,name,difficulty,summary&limit=5';
+
+  next();
+};
+
 export const getAllTours = async (req, res) => {
   try {
     console.log(req.query);
