@@ -23,7 +23,7 @@ export const getAllTours = async (req, res) => {
 
     let query = Tour.find(JSON.parse(queryStr));
 
-    // 3) Sorting
+    // 2) Sorting
     if (req.query.sort) {
       const sortBy = req.query.sort.replaceAll(',', ' ');
       query = query.sort(sortBy);
@@ -33,6 +33,23 @@ export const getAllTours = async (req, res) => {
     } else {
       query = query.sort('-createdAt');
     }
+
+    // 3) Field limiting
+
+    if (req.query.fields) {
+      const fields = req.query.fields.replaceAll(',', ' ');
+      query = query.select(fields);
+    } else {
+      query = query.select('-__v');
+    }
+
+    // 4) Limiting the results
+
+    /* if (req.query.limit) {
+      query = query.limit(req.query.limit);
+    } else {
+      query = query.limit(5);
+    } */
 
     // Execute the query
     const tours = await query;
