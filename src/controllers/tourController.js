@@ -43,13 +43,22 @@ export const getAllTours = async (req, res) => {
       query = query.select('-__v');
     }
 
-    // 4) Limiting the results
+    // 4) Limiting the results and pagination
+    // page=2&limit=10 => 1-10 page 1, 11-20 page2, 21-30 paage 3, ...
+    // mongo skip(10).limit(10) this mean page no 2
 
-    /* if (req.query.limit) {
-      query = query.limit(req.query.limit);
-    } else {
-      query = query.limit(5);
-    } */
+    const pageNo = +req.query.page || 1;
+    const limitNo = +req.query.limit || 100;
+
+    const skip = (pageNo - 1) * limitNo;
+
+    if (req.query.page) {
+      const numTours = await Tour.countDocuments();
+
+      if (skip >= numTours) throw new Error("This page doesn't Exist");
+    }
+
+    query = query.skip(skip).limit(limitNo);
 
     // Execute the query
     const tours = await query;
@@ -69,7 +78,7 @@ export const getAllTours = async (req, res) => {
   } catch (err) {
     res.status(404).json({
       status: 'fail',
-      message: err,
+      message: err.message,
     });
   }
 };
