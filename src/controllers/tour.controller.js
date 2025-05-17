@@ -1,4 +1,5 @@
 import Tour from '../models/tour.model.js';
+import APIFeatures from '../utils/api-features.js';
 
 export const aliasTopTours = (req, res, next) => {
   req.url =
@@ -9,71 +10,13 @@ export const aliasTopTours = (req, res, next) => {
 
 export const getAllTours = async (req, res) => {
   try {
-    console.log(req.query);
-    // Build the query
-    // 1A) Filtering
-    const queryObj = { ...req.query };
-    const excludedFields = ['page', 'limit', 'sort', 'fields'];
-    excludedFields.forEach((field) => delete queryObj[field]);
+    const toursFeaturesQuery = new APIFeatures(Tour.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
 
-    /* 
-		mongodb filtring
-		Tour.find({difficulty: 'easy', duration: {$gte: 5}})
-		the queryObj
-		Tour.find({difficulty: 'easy', duration: {gte: 5}})
-		so we gonna solve this problem
-		*/
-
-    // 1B) Adbanced filtering
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-
-    let query = Tour.find(JSON.parse(queryStr));
-
-    // 2) Sorting
-    if (req.query.sort) {
-      const sortBy = req.query.sort.replaceAll(',', ' ');
-      query = query.sort(sortBy);
-
-      // if you want decending use (-) before the field
-      // to sort with multi falue in mongo  sort('price duration') in url sort=price,duration
-    } else {
-      query = query.sort('-createdAt');
-    }
-
-    // 3) Field limiting
-
-    if (req.query.fields) {
-      const fields = req.query.fields.replaceAll(',', ' ');
-      query = query.select(fields);
-    } else {
-      query = query.select('-__v');
-    }
-
-    // 4) Limiting the results and pagination
-    // page=2&limit=10 => 1-10 page 1, 11-20 page2, 21-30 paage 3, ...
-    // mongo skip(10).limit(10) this mean page no 2
-
-    const pageNo = +req.query.page || 1;
-    const limitNo = +req.query.limit || 100;
-
-    const skip = (pageNo - 1) * limitNo;
-
-    if (req.query.page) {
-      const numTours = await Tour.countDocuments();
-
-      if (skip >= numTours) throw new Error("This page doesn't Exist");
-    }
-
-    query = query.skip(skip).limit(limitNo);
-
-    // Execute the query
-    const tours = await query;
-    /*    const tours = await Tour.find()
-      .where('duration')
-      .equals('5')
-      .where('difficulty')
-      .equals('easy'); */
+    const tours = await toursFeaturesQuery.mongoQuery;
 
     res.status(200).json({
       message: 'sucess',
