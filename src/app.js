@@ -2,8 +2,8 @@ import dotenv from 'dotenv';
 import express from 'express';
 import morgan from 'morgan';
 import qs from 'qs';
-import tourRouter from './routes/tourRoute.js';
-import userRouter from './routes/userRoute.js';
+import tourRouter from './routes/tour.route.js';
+import userRouter from './routes/user.route.js';
 
 dotenv.config();
 const app = express();

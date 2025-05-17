@@ -1,4 +1,4 @@
-import Tour from '../models/tourModel.js';
+import Tour from '../models/tour.model.js';
 
 export const aliasTopTours = (req, res, next) => {
   req.url =

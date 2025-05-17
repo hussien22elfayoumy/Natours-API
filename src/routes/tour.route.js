@@ -1,4 +1,5 @@
 import express from 'express';
+
 import {
   aliasTopTours,
   createTour,
@@ -6,7 +7,7 @@ import {
   getAllTours,
   getTour,
   updateTour,
-} from '../controllers/tourController.js';
+} from '../controllers/tour.controller.js';
 
 const router = express.Router();
 
