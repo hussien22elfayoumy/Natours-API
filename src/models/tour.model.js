@@ -76,12 +76,13 @@ tourSchema.virtual('durationInWeeks').get(function () {
 // DOCUMENT Middleware: runs before .save() && .create() command;
 // NOTE: .insertMany() will not trigger save middleware
 // this calles [a pre 'save' hook]
-/* tourSchema.pre('save', function (next) {
+// this === document
+tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
 
   next();
 });
-
+/*
 // Will be excuted after all pre middleware done
 tourSchema.post('save', (doc, next) => {
   console.log(doc);
@@ -89,6 +90,7 @@ tourSchema.post('save', (doc, next) => {
 }); */
 
 // QUERY Middleware
+// this === query
 // tourSchema.pre('find', function (next) {
 tourSchema.pre(/^find/, function (next) {
   // will target all queryfn that start with find
@@ -99,6 +101,13 @@ tourSchema.pre(/^find/, function (next) {
 
 tourSchema.post(/^find/, function (docs, next) {
   console.log(`This query took ${Date.now() - this.start}ms`);
+  next();
+});
+
+// Aggregation Middleware
+// this === current aggregation object
+tourSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
   next();
 });
 const Tour = mongoose.model('Tour', tourSchema);
