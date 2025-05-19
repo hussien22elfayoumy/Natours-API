@@ -7,14 +7,14 @@ import userRouter from './routes/user.route.js';
 
 dotenv.config();
 const app = express();
-app.set('query parser', (str) => qs.parse(str));
 
 // 1) Middlewares
+app.set('query parser', (str) => qs.parse(str));
+
 if (process.env.NODE_ENV === 'development') {
+  // TIP logger function logs request informaiton
   app.use(morgan('dev'));
 }
-
-// TIP logger function logs request informaiton
 
 app.use(express.json()); // TIP: Add the body property to the incoming reqest in express
 
