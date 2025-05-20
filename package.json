@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start:dev": "nodemon ./src/server.js",
-    "start:prod": "SET NODE_ENV=production && nodemon server.js",
+    "start:prod": "SET NODE_ENV=production&& nodemon ./src/server.js",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "format": "prettier --check .",

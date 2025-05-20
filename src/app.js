@@ -26,7 +26,7 @@ app.use('/api/v1/users', userRouter);
 
 // handle unhandled routes
 
-app.all('/{*any}', (req, res, next) => {
+app.use((req, res, next) => {
   /* res.status(404).json({
     status: 'fail',
     message: `Can't get the route ${req.originalUrl}`,
@@ -41,7 +41,6 @@ app.all('/{*any}', (req, res, next) => {
 });
 
 // global error middleware
-
 app.use(errorMiddleware);
 
 // 3) Start the server

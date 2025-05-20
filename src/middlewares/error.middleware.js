@@ -1,3 +1,5 @@
+import AppError from '../utils/app-error.js';
+
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -8,7 +10,7 @@ const sendErrorDev = (err, res) => {
 };
 const sendErrorProd = (err, res) => {
   // Operational Erros and trusted: send to client
-  if (err.isOperationlError) {
+  if (err.isOperationalError) {
     res.status(err.statusCode).json({
       status: err.status,
       message: err.message,
@@ -17,7 +19,7 @@ const sendErrorProd = (err, res) => {
     // Programming error unknown errors avoid: don't leek to the client
   } else {
     // 1) log the error
-    console.error('Error 💥', err);
+    console.error('Erroree 💥', err);
 
     // 2) send to client
     res.status(500).json({
@@ -34,7 +36,14 @@ export default (err, req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
-    sendErrorProd(err, res);
+    let myErr = Object.create(err);
+
+    if (err.name === 'CastError') {
+      // id error Cast to ObjectId failed
+      const message = `Ivalid ${err.path}: ${err.value}.`;
+      myErr = new AppError(message, 400);
+    }
+    sendErrorProd(myErr, res);
   }
 
   next();
