@@ -4,6 +4,8 @@ import morgan from 'morgan';
 import qs from 'qs';
 import tourRouter from './routes/tour.route.js';
 import userRouter from './routes/user.route.js';
+import AppError from './utils/app-error.js';
+import errorMiddleware from './middlewares/error.middleware.js';
 
 dotenv.config();
 const app = express();
@@ -30,26 +32,17 @@ app.all('/{*any}', (req, res, next) => {
     message: `Can't get the route ${req.originalUrl}`,
   }); */
 
-  const err = new Error(`Can't get the route ${req.originalUrl}`);
-  err.status = 'fail';
-  err.statusCode = 404;
+  // const err = new Error(`Can't get the route ${req.originalUrl}`);
+  // err.status = 'fail';
+  // err.statusCode = 404;
+  const err = new AppError(`Can't get the route ${req.originalUrl}`, 404);
 
   next(err); // will pass it to next middleware in middleware stack
 });
 
 // global error middleware
 
-app.use((err, req, res, next) => {
-  err.statusCode = err.statusCode || 500;
-  err.status = err.status || 'error';
-
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-  });
-
-  next();
-});
+app.use(errorMiddleware);
 
 // 3) Start the server
 export default app;
