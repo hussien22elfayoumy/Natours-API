@@ -7,6 +7,14 @@ import userRouter from './routes/user.route.js';
 import AppError from './utils/app-error.js';
 import errorMiddleware from './middlewares/error.middleware.js';
 
+process.on('uncaughtException', (err) => {
+  console.log('uncaught exception, Shutting down the system');
+  console.log(err.name, err.message);
+
+  // process.exit(0) => success || process.exit(1) => Failure / Error
+  process.exit(1); // craching the app is a must
+});
+
 dotenv.config();
 const app = express();
 
