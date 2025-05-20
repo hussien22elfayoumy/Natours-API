@@ -47,6 +47,8 @@ export default (err, req, res, next) => {
       const message = `Duplicate filed value: ${err.keyValue.name}, please user another value`;
 
       myErr = new AppError(message, 400);
+    } else if (err.name === 'ValidationError') {
+      myErr = new AppError(err.message, 400);
     }
     sendErrorProd(myErr, res);
   }
