@@ -22,5 +22,16 @@ app.use(express.json()); // TIP: Add the body property to the incoming reqest in
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
+// handle unhandled routes
+
+app.all('/{*any}', (req, res, next) => {
+  res.status(404).json({
+    status: 'fail',
+    message: `Can't get the route ${req.originalUrl}`,
+  });
+
+  next();
+});
+
 // 3) Start the server
 export default app;
