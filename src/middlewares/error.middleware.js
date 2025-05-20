@@ -42,6 +42,11 @@ export default (err, req, res, next) => {
       // id error Cast to ObjectId failed
       const message = `Ivalid ${err.path}: ${err.value}.`;
       myErr = new AppError(message, 400);
+    } else if (err.code === 11000) {
+      // duplicate key error collection
+      const message = `Duplicate filed value: ${err.keyValue.name}, please user another value`;
+
+      myErr = new AppError(message, 400);
     }
     sendErrorProd(myErr, res);
   }
