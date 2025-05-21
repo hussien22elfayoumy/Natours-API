@@ -51,6 +51,15 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+// check for the user password
+// will be avilabel in all user documents instances
+userSchema.methods.checkPassword = async function (
+  candidatePassword,
+  userPassword,
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
+
 const User = mongoose.model('User', userSchema);
 
 export default User;

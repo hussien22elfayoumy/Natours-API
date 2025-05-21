@@ -1,6 +1,12 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
 import catchErrorAsync from '../utils/catch-err-async.js';
+import AppError from '../utils/app-error.js';
+
+const signToken = (id) =>
+  jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXP,
+  });
 
 export const singup = catchErrorAsync(async (req, res, next) => {
   const newUser = await User.create({
@@ -12,9 +18,7 @@ export const singup = catchErrorAsync(async (req, res, next) => {
 
   // loggin the new  user in as soon as he signup
 
-  const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXP,
-  });
+  const token = signToken(newUser._id);
 
   res.status(201).json({
     status: 'sucess',
@@ -25,6 +29,24 @@ export const singup = catchErrorAsync(async (req, res, next) => {
   });
 });
 
-export const singin = catchErrorAsync(async (req, res, next) => {
+export const login = catchErrorAsync(async (req, res, next) => {
   // const newUser = await User.create(req.body);
+  const { email, password } = req.body;
+
+  // 1) check if email and password exist
+  if (!email || !password)
+    return next(new AppError('Invalid Email or Password', 400));
+
+  // 2)  check if user exist && check password is correct
+  const user = await User.findOne({ email: email }).select('+password');
+
+  if (!user || !(await user.checkPassword(password, user.password)))
+    return next(new AppError('Invalid Email or Password', 401)); // 401 == unautorize
+
+  const token = signToken(user._id);
+  // 3) if Ok send token to the client
+  res.status(200).json({
+    status: 'sucess',
+    token,
+  });
 });
