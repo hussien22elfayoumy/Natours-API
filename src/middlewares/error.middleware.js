@@ -42,14 +42,23 @@ export default (err, req, res, next) => {
       // id error Cast to ObjectId failed
       const message = `Ivalid ${err.path}: ${err.value}.`;
       myErr = new AppError(message, 400);
-    } else if (err.code === 11000) {
+    }
+    if (err.code === 11000) {
       // duplicate key error collection
       const message = `Duplicate filed value: ${err.keyValue.name}, please user another value`;
 
       myErr = new AppError(message, 400);
-    } else if (err.name === 'ValidationError') {
+    }
+    if (err.name === 'ValidationError') {
       myErr = new AppError(err.message, 400);
     }
+
+    if (err.name === 'JsonWebTokenError')
+      myErr = new AppError('Invalid token. Please login again', 401);
+
+    if (err.name === 'TokenExpiredError')
+      myErr = new AppError('Your Token has expired. Please login again', 401);
+
     sendErrorProd(myErr, res);
   }
 

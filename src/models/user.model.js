@@ -35,6 +35,7 @@ const userSchema = new mongoose.Schema({
       message: "Passwords don't match",
     },
   },
+  passwordChangedAt: Date,
 });
 
 // using mongo middleware to hash password on pre save hook
@@ -58,6 +59,21 @@ userSchema.methods.checkPassword = async function (
   userPassword,
 ) {
   return await bcrypt.compare(candidatePassword, userPassword);
+};
+
+// Check if the user changed password after he logged in
+userSchema.methods.hasChangedPassword = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const passwordTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10,
+    );
+
+    return JWTTimestamp < passwordTimestamp;
+  }
+
+  // false mean not changed
+  return false;
 };
 
 const User = mongoose.model('User', userSchema);
