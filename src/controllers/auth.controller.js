@@ -83,5 +83,16 @@ export const protectRoute = catchErrorAsync(async (req, res, next) => {
     );
 
   //Grant access to protectd route
+  req.user = freshUser;
   next();
 });
+
+export const authorize = (...roles) =>
+  catchErrorAsync(async (req, res, next) => {
+    if (!roles.includes(req.user.role))
+      return next(
+        new AppError("You don't have permisson to make this action", 403),
+      ); // 403 forbidded
+
+    next();
+  });
