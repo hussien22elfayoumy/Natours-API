@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -41,6 +42,8 @@ const userSchema = new mongoose.Schema({
     },
   },
   passwordChangedAt: Date,
+  passwordResetToken: String,
+  passwordResetExp: Date,
 });
 
 // using mongo middleware to hash password on pre save hook
@@ -81,6 +84,22 @@ userSchema.methods.hasChangedPassword = function (JWTTimestamp) {
   return false;
 };
 
+// Generate reandom token for reset password
+
+userSchema.methods.createResetPasswordToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  this.passwordResetExp = Date.now() + 10 * 60 * 1000;
+
+  console.log({ resetToken }, this.passwordResetToken, this.passwordResetExp);
+
+  return resetToken;
+};
 const User = mongoose.model('User', userSchema);
 
 export default User;

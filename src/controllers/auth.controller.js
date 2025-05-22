@@ -96,3 +96,22 @@ export const authorize = (...roles) =>
 
     next();
   });
+
+export const forgotPassword = catchErrorAsync(async (req, res, next) => {
+  // Get user email and check if it there
+  const user = await User.findOne({ email: req.body.email });
+  if (!user)
+    return next(new AppError('There is no user with that email.', 404));
+
+  // Generate reandom token
+  const resetToken = user.createResetPasswordToken();
+  await user.save({ validateBeforeSave: false }); // save the changed in createReasetpasswordToken to the database
+
+  console.log({ resetToken });
+
+  // Send token to user email
+
+  res.status(200).json({
+    status: 'sucess',
+  });
+});
