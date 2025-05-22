@@ -47,7 +47,6 @@ const userSchema = new mongoose.Schema({
 });
 
 // using mongo middleware to hash password on pre save hook
-
 userSchema.pre('save', async function (next) {
   // check if password is modified first to prevent un needed hasing
   if (!this.isModified('password')) return next();
@@ -57,6 +56,16 @@ userSchema.pre('save', async function (next) {
 
   // remove the confirm password from database
   this.passwordConfirm = undefined;
+  next();
+});
+
+// update the passwordChangedAt afte resetting it
+
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
+
   next();
 });
 
