@@ -5,6 +5,7 @@ import qs from 'qs';
 import { rateLimit } from 'express-rate-limit';
 import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
+import hpp from 'hpp';
 import { xss } from 'express-xss-sanitizer';
 import mongoose from 'mongoose';
 import tourRouter from './routes/tour.route.js';
@@ -50,6 +51,20 @@ app.use(express.json({ limit: '10kb' }));
 
 // Data sanitizatin against XSS attacks cross site scripting attacks
 app.use(xss());
+
+// Prevent paramaters pollution
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'maxGroupSize',
+      'difficulty',
+      'ratingsAverage',
+      'ratingsQuantity',
+      'price',
+    ],
+  }),
+);
 
 // 2) Routes
 app.use('/api/v1/tours', tourRouter);
