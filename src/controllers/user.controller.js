@@ -48,9 +48,11 @@ export const updateUser = catchErrorAsync(async (req, res, next) => {
   });
 });
 
-export const deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defiend',
+export const deleteUser = catchErrorAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user._id, { active: false });
+
+  res.status(204).json({
+    status: 'success',
+    data: null,
   });
-};
+});

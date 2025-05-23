@@ -44,6 +44,11 @@ const userSchema = new mongoose.Schema({
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExp: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 });
 
 // using mongo middleware to hash password on pre save hook
@@ -65,6 +70,13 @@ userSchema.pre('save', async function (next) {
   if (!this.isModified('password') || this.isNew) return next();
 
   this.passwordChangedAt = Date.now() - 1000;
+
+  next();
+});
+
+// query middleware return only user with active === true
+userSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } }); //points to the query
 
   next();
 });
