@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import morgan from 'morgan';
 import qs from 'qs';
+import { rateLimit } from 'express-rate-limit';
 import tourRouter from './routes/tour.route.js';
 import userRouter from './routes/user.route.js';
 import AppError from './utils/app-error.js';
@@ -25,6 +26,14 @@ if (process.env.NODE_ENV === 'development') {
   // TIP logger function logs request informaiton
   app.use(morgan('dev'));
 }
+
+const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 60 minutes
+  limit: 100, // Limit each IP to 100 requests per `window` (here, per 60 minutes).
+  message: 'Too many requests from this IP, please try again in one hour',
+});
+
+app.use('/api', limiter);
 
 app.use(express.json()); // TIP: Add the body property to the incoming reqest in express
 
