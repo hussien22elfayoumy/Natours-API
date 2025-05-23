@@ -169,3 +169,32 @@ export const resetPassword = catchErrorAsync(async (req, res, next) => {
     token,
   });
 });
+
+export const updatePassword = catchErrorAsync(async (req, res, next) => {
+  // 1) Get the user from the database based on token
+  const user = await User.findById(req.user._id).select('+password');
+
+  // 2) Check if the current password is correct
+  const isPasswordCorrect = await user.checkPassword(
+    req.body.currentPassword,
+    user.password,
+  );
+
+  if (!isPasswordCorrect)
+    return next(new AppError('The current password is not correct', 401));
+
+  // 3) if so, udate the password
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+
+  await user.save();
+
+  // 4) log the user in , send jwt
+  const token = signToken(user._id);
+
+  res.status(200).json({
+    status: 'sucess',
+    message: 'Password changed succssfully',
+    token,
+  });
+});
