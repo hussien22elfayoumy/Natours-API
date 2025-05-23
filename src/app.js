@@ -4,6 +4,8 @@ import morgan from 'morgan';
 import qs from 'qs';
 import { rateLimit } from 'express-rate-limit';
 import helmet from 'helmet';
+import mongoSanitize from 'express-mongo-sanitize';
+import { xss } from 'express-xss-sanitizer';
 import mongoose from 'mongoose';
 import tourRouter from './routes/tour.route.js';
 import userRouter from './routes/user.route.js';
@@ -42,6 +44,12 @@ app.use('/api', limiter);
 
 // Add the body property to the incoming reqest in express {body parser}
 app.use(express.json({ limit: '10kb' }));
+
+// Data sanitization aganist noSQL query injection
+// app.use(mongoSanitize()); doesn't work with the new version of express it mutate the query object
+
+// Data sanitizatin against XSS attacks cross site scripting attacks
+app.use(xss());
 
 // 2) Routes
 app.use('/api/v1/tours', tourRouter);

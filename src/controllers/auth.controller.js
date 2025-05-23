@@ -51,9 +51,10 @@ export const singup = catchErrorAsync(async (req, res, next) => {
 export const login = catchErrorAsync(async (req, res, next) => {
   // const newUser = await User.create(req.body);
   const { email, password } = req.body;
+  console.log(typeof email);
 
   // 1) check if email and password exist
-  if (!email || !password)
+  if (!email || !password || typeof email !== 'string')
     return next(new AppError('Invalid Email or Password', 400));
 
   // 2)  check if user exist && check password is correct
