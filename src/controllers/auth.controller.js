@@ -11,6 +11,29 @@ const signToken = (id) =>
     expiresIn: process.env.JWT_EXP,
   });
 
+const createSendToken = (user, statuscode, res) => {
+  const token = signToken(user._id);
+
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXP * 24 * 60 * 60 * 1000,
+    ),
+    httpOnly: true,
+  };
+
+  if (process.env.NODE_ENV === 'production') cookieOptions.scure = true;
+
+  res.cookie('natours-jwt', token, cookieOptions);
+
+  res.status(statuscode).json({
+    status: 'sucess',
+    token,
+    data: {
+      user,
+    },
+  });
+};
+
 export const singup = catchErrorAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -22,15 +45,7 @@ export const singup = catchErrorAsync(async (req, res, next) => {
 
   // loggin the new  user in as soon as he signup
 
-  const token = signToken(newUser._id);
-
-  res.status(201).json({
-    status: 'sucess',
-    token,
-    data: {
-      user: newUser,
-    },
-  });
+  createSendToken(newUser, 201, res);
 });
 
 export const login = catchErrorAsync(async (req, res, next) => {
@@ -47,12 +62,8 @@ export const login = catchErrorAsync(async (req, res, next) => {
   if (!user || !(await user.checkPassword(password, user.password)))
     return next(new AppError('Invalid Email or Password', 401)); // 401 == unautorize
 
-  const token = signToken(user._id);
   // 3) if Ok send token to the client
-  res.status(200).json({
-    status: 'sucess',
-    token,
-  });
+  createSendToken(user, 200, res);
 });
 
 export const protectRoute = catchErrorAsync(async (req, res, next) => {
@@ -162,12 +173,7 @@ export const resetPassword = catchErrorAsync(async (req, res, next) => {
   // 3) update changedpasswordAt property for the user done in middleware
 
   // 4) log the user in and send jwt to the client
-  const token = signToken(user._id);
-
-  res.status(200).json({
-    status: 'sucess',
-    token,
-  });
+  createSendToken(user, 200, res);
 });
 
 export const updatePassword = catchErrorAsync(async (req, res, next) => {
@@ -190,11 +196,5 @@ export const updatePassword = catchErrorAsync(async (req, res, next) => {
   await user.save();
 
   // 4) log the user in , send jwt
-  const token = signToken(user._id);
-
-  res.status(200).json({
-    status: 'sucess',
-    message: 'Password changed succssfully',
-    token,
-  });
+  createSendToken(user, 200, res);
 });
