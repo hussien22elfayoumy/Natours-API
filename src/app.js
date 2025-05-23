@@ -3,6 +3,8 @@ import express from 'express';
 import morgan from 'morgan';
 import qs from 'qs';
 import { rateLimit } from 'express-rate-limit';
+import helmet from 'helmet';
+import mongoose from 'mongoose';
 import tourRouter from './routes/tour.route.js';
 import userRouter from './routes/user.route.js';
 import AppError from './utils/app-error.js';
@@ -20,38 +22,33 @@ dotenv.config();
 const app = express();
 
 // 1) Middlewares
+// setting some sucurity headers
+app.use(helmet());
+
 app.set('query parser', (str) => qs.parse(str));
 
+// logger function logs request informaiton
 if (process.env.NODE_ENV === 'development') {
-  // TIP logger function logs request informaiton
   app.use(morgan('dev'));
 }
 
+// limit requests
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 60 minutes
   limit: 100, // Limit each IP to 100 requests per `window` (here, per 60 minutes).
   message: 'Too many requests from this IP, please try again in one hour',
 });
-
 app.use('/api', limiter);
 
-app.use(express.json()); // TIP: Add the body property to the incoming reqest in express
+// Add the body property to the incoming reqest in express {body parser}
+app.use(express.json({ limit: '10kb' }));
 
 // 2) Routes
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
 // handle unhandled routes
-
 app.use((req, res, next) => {
-  /* res.status(404).json({
-    status: 'fail',
-    message: `Can't get the route ${req.originalUrl}`,
-  }); */
-
-  // const err = new Error(`Can't get the route ${req.originalUrl}`);
-  // err.status = 'fail';
-  // err.statusCode = 404;
   const err = new AppError(`Can't get the route ${req.originalUrl}`, 404);
 
   next(err); // will pass it to next middleware in middleware stack
@@ -60,5 +57,21 @@ app.use((req, res, next) => {
 // global error middleware
 app.use(errorMiddleware);
 
-// 3) Start the server
-export default app;
+// 3) connect to the database
+mongoose
+  .connect(process.env.DB_URL)
+  .then(() => console.log('connectd to mongodb'));
+
+// 4) Start the server
+const PORT = process.env.PORT || 8000;
+const server = app.listen(PORT, () => {
+  console.log(`App is running on port, ${PORT}`);
+});
+
+process.on('unhandledRejection', (err) => {
+  console.log('unhandled rejections, Shutting down the system');
+  console.log(err.name, err.message);
+
+  // process.exit(0) => success || process.exit(1) => Failure / Error
+  server.close(() => process.exit(1)); // craching the app it optional
+});
