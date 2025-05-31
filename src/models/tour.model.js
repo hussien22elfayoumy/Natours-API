@@ -145,6 +145,16 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
+// populate the guied before returing the res
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
+
+  next();
+});
+
 tourSchema.post(/^find/, function (docs, next) {
   console.log(`This query took ${Date.now() - this.start}ms`);
   next();
