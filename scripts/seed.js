@@ -3,7 +3,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import mongoose from 'mongoose';
 import fs from 'fs';
-import Tour from '../src/models/tourModel.js';
+import Tour from '../src/models/tour.model.js';
 
 const _fileName = fileURLToPath(import.meta.url);
 const _dirname = dirname(_fileName);
@@ -18,7 +18,7 @@ mongoose
   .catch((err) => console.log(err));
 
 const tours = JSON.parse(
-  fs.readFileSync(`${_dirname}/../dev-data/data/tours-simple.json`),
+  fs.readFileSync(`${_dirname}/../dev-data/data/tours.json`),
 );
 
 const importData = async () => {
