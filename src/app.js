@@ -4,12 +4,12 @@ import morgan from 'morgan';
 import qs from 'qs';
 import { rateLimit } from 'express-rate-limit';
 import helmet from 'helmet';
-import mongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
 import { xss } from 'express-xss-sanitizer';
 import mongoose from 'mongoose';
 import tourRouter from './routes/tour.route.js';
 import userRouter from './routes/user.route.js';
+import reviewRouter from './routes/review.route.js';
 import AppError from './utils/app-error.js';
 import errorMiddleware from './middlewares/error.middleware.js';
 
@@ -69,6 +69,7 @@ app.use(
 // 2) Routes
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 // handle unhandled routes
 app.use((req, res, next) => {
