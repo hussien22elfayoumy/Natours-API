@@ -11,6 +11,7 @@ import {
   updateTour,
 } from '../controllers/tour.controller.js';
 import { authorize, protectRoute } from '../controllers/auth.controller.js';
+import { createReview } from '../controllers/review.controller.js';
 
 const router = express.Router();
 
@@ -23,5 +24,9 @@ router
   .get(getTour)
   .patch(updateTour)
   .delete(protectRoute, authorize('admin', 'lead-guide'), deleteTour);
+
+router
+  .route('/:tourId/reviews')
+  .post(protectRoute, authorize('user'), createReview);
 
 export default router;
