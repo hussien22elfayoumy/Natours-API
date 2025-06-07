@@ -11,9 +11,11 @@ import {
   updateTour,
 } from '../controllers/tour.controller.js';
 import { authorize, protectRoute } from '../controllers/auth.controller.js';
-import { createReview } from '../controllers/review.controller.js';
+import reviewRouter from './review.route.js';
 
 const router = express.Router();
+
+router.use('/:tourId/reviews', reviewRouter);
 
 router.route('/top-5-cheap').get(aliasTopTours, getAllTours);
 router.route('/tours-stats').get(getTourStats);
@@ -24,9 +26,5 @@ router
   .get(getTour)
   .patch(updateTour)
   .delete(protectRoute, authorize('admin', 'lead-guide'), deleteTour);
-
-router
-  .route('/:tourId/reviews')
-  .post(protectRoute, authorize('user'), createReview);
 
 export default router;
