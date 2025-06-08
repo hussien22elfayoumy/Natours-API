@@ -30,3 +30,15 @@ export const updateOne = (Model) =>
       },
     });
   });
+
+export const createOne = (Model) =>
+  catchErrorAsync(async (req, res, next) => {
+    const newDoc = await Model.create(req.body);
+
+    res.status(201).json({
+      status: 'sucess',
+      data: {
+        data: newDoc,
+      },
+    });
+  });

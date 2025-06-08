@@ -2,7 +2,7 @@ import Tour from '../models/tour.model.js';
 import APIFeatures from '../utils/api-features.js';
 import AppError from '../utils/app-error.js';
 import catchErrorAsync from '../utils/catch-err-async.js';
-import { deleteOne, updateOne } from './handler-factory.js';
+import { createOne, deleteOne, updateOne } from './handler-factory.js';
 
 export const aliasTopTours = (req, res, next) => {
   req.url =
@@ -29,16 +29,7 @@ export const getAllTours = catchErrorAsync(async (req, res, next) => {
   });
 });
 
-export const createTour = catchErrorAsync(async (req, res, next) => {
-  const newTour = await Tour.create(req.body);
-
-  res.status(201).json({
-    status: 'sucess',
-    data: {
-      tour: newTour,
-    },
-  });
-});
+export const createTour = createOne(Tour);
 
 export const getTour = catchErrorAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id).populate({
