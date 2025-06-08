@@ -9,6 +9,7 @@ import {
   updateUser,
 } from '../controllers/user.controller.js';
 import {
+  authorize,
   forgotPassword,
   login,
   protectRoute,
@@ -23,10 +24,16 @@ router.post('/signup', singup);
 router.post('/login', login);
 router.post('/forgot-password', forgotPassword);
 router.patch('/reset-password/:token', resetPassword);
-router.get('/current', protectRoute, getCurrentUser);
-router.patch('/update-password', protectRoute, updatePassword);
-router.patch('/update-user', protectRoute, updateAccount);
-router.delete('/deactivate-user', protectRoute, deactivateAccount);
+
+// Protect all next routes after this middleware
+router.use(protectRoute);
+
+router.get('/current', getCurrentUser);
+router.patch('/update-password', updatePassword);
+router.patch('/update-user', updateAccount);
+router.delete('/deactivate-user', deactivateAccount);
+
+router.use(authorize('admin'));
 
 router.route('/').get(getAllUsers);
 router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
