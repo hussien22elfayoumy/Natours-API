@@ -1,31 +1,9 @@
 import User from '../models/user.model.js';
 import catchErrorAsync from '../utils/catch-err-async.js';
+import { deleteOne } from './handler-factory.js';
 
-export const getAllUsers = catchErrorAsync(async (req, res, next) => {
-  const users = await User.find();
-
-  res.status(200).json({
-    status: 'sucess',
-    data: {
-      users,
-    },
-  });
-});
-
-export const createUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defiend',
-  });
-};
-export const getUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defiend',
-  });
-};
-
-export const updateUser = catchErrorAsync(async (req, res, next) => {
+// logged in user actions
+export const updateAccount = catchErrorAsync(async (req, res, next) => {
   const user = await User.findByIdAndUpdate(
     req.user._id,
     {
@@ -48,7 +26,7 @@ export const updateUser = catchErrorAsync(async (req, res, next) => {
   });
 });
 
-export const deleteUser = catchErrorAsync(async (req, res, next) => {
+export const deactivateAccount = catchErrorAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user._id, { active: false });
 
   res.status(204).json({
@@ -56,3 +34,17 @@ export const deleteUser = catchErrorAsync(async (req, res, next) => {
     data: null,
   });
 });
+
+// Admin actions
+export const getAllUsers = catchErrorAsync(async (req, res, next) => {
+  const users = await User.find();
+
+  res.status(200).json({
+    status: 'sucess',
+    data: {
+      users,
+    },
+  });
+});
+
+export const deleteUser = deleteOne(User);

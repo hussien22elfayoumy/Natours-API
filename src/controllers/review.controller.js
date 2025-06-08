@@ -1,5 +1,6 @@
 import Review from '../models/review.model.js';
 import catchErrorAsync from '../utils/catch-err-async.js';
+import { deleteOne } from './handler-factory.js';
 
 export const getReviews = catchErrorAsync(async (req, res, next) => {
   let filter = {};
@@ -30,3 +31,5 @@ export const createReview = catchErrorAsync(async (req, res, next) => {
     },
   });
 });
+
+export const deleteReview = deleteOne(Review);

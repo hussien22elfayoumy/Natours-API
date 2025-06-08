@@ -2,6 +2,7 @@ import Tour from '../models/tour.model.js';
 import APIFeatures from '../utils/api-features.js';
 import AppError from '../utils/app-error.js';
 import catchErrorAsync from '../utils/catch-err-async.js';
+import { deleteOne } from './handler-factory.js';
 
 export const aliasTopTours = (req, res, next) => {
   req.url =
@@ -71,17 +72,7 @@ export const updateTour = catchErrorAsync(async (req, res, next) => {
   });
 });
 
-export const deleteTour = catchErrorAsync(async (req, res, next) => {
-  const deletedTour = await Tour.findByIdAndDelete(req.params.id);
-
-  if (!deletedTour)
-    return next(new AppError('No tour found with that id', 404));
-
-  res.status(204).json({
-    status: 'success',
-    message: null,
-  });
-});
+export const deleteTour = deleteOne(Tour);
 
 export const getTourStats = catchErrorAsync(async (req, res, next) => {
   const tourStats = await Tour.aggregate([

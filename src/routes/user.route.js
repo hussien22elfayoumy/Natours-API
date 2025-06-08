@@ -1,10 +1,9 @@
 import express from 'express';
 import {
-  createUser,
+  deactivateAccount,
   deleteUser,
   getAllUsers,
-  getUser,
-  updateUser,
+  updateAccount,
 } from '../controllers/user.controller.js';
 import {
   forgotPassword,
@@ -22,10 +21,10 @@ router.post('/login', login);
 router.post('/forgot-password', forgotPassword);
 router.patch('/reset-password/:token', resetPassword);
 router.patch('/update-password', protectRoute, updatePassword);
-router.patch('/update-user', protectRoute, updateUser);
-router.delete('/delete-user', protectRoute, deleteUser);
+router.patch('/update-user', protectRoute, updateAccount);
+router.delete('/deactivate-user', protectRoute, deactivateAccount);
 
-router.route('/').get(getAllUsers).post(createUser);
-router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
+router.route('/').get(getAllUsers);
+router.route('/:id').delete(deleteUser);
 
 export default router;
