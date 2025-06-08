@@ -1,6 +1,6 @@
 import Review from '../models/review.model.js';
 import catchErrorAsync from '../utils/catch-err-async.js';
-import { createOne, deleteOne, updateOne } from './handler-factory.js';
+import { createOne, deleteOne, getOne, updateOne } from './handler-factory.js';
 
 export const getReviews = catchErrorAsync(async (req, res, next) => {
   let filter = {};
@@ -16,6 +16,8 @@ export const getReviews = catchErrorAsync(async (req, res, next) => {
     },
   });
 });
+
+export const getReview = getOne(Review);
 
 export const setTourUserIds = (req, res, next) => {
   // Allow nested routes

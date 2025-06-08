@@ -1,8 +1,7 @@
 import Tour from '../models/tour.model.js';
 import APIFeatures from '../utils/api-features.js';
-import AppError from '../utils/app-error.js';
 import catchErrorAsync from '../utils/catch-err-async.js';
-import { createOne, deleteOne, updateOne } from './handler-factory.js';
+import { createOne, deleteOne, getOne, updateOne } from './handler-factory.js';
 
 export const aliasTopTours = (req, res, next) => {
   req.url =
@@ -31,20 +30,7 @@ export const getAllTours = catchErrorAsync(async (req, res, next) => {
 
 export const createTour = createOne(Tour);
 
-export const getTour = catchErrorAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id).populate({
-    path: 'reviews',
-  });
-
-  if (!tour) return next(new AppError('No tour found with that id', 404));
-
-  res.status(200).json({
-    message: 'sucess',
-    data: {
-      tour: tour,
-    },
-  });
-});
+export const getTour = getOne(Tour, { path: 'reviews' });
 
 export const updateTour = updateOne(Tour);
 

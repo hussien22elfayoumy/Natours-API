@@ -3,6 +3,7 @@ import {
   deactivateAccount,
   deleteUser,
   getAllUsers,
+  getUser,
   updateAccount,
   updateUser,
 } from '../controllers/user.controller.js';
@@ -26,6 +27,6 @@ router.patch('/update-user', protectRoute, updateAccount);
 router.delete('/deactivate-user', protectRoute, deactivateAccount);
 
 router.route('/').get(getAllUsers);
-router.route('/:id').patch(updateUser).delete(deleteUser);
+router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
 
 export default router;

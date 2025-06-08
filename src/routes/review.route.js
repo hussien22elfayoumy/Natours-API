@@ -2,6 +2,7 @@ import express from 'express';
 import {
   createReview,
   deleteReview,
+  getReview,
   getReviews,
   setTourUserIds,
   updateReview,
@@ -15,6 +16,6 @@ router
   .get(getReviews)
   .post(protectRoute, authorize('user'), setTourUserIds, createReview);
 
-router.route('/:id').patch(updateReview).delete(deleteReview);
+router.route('/:id').get(getReview).patch(updateReview).delete(deleteReview);
 
 export default router;
