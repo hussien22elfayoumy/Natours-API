@@ -3,6 +3,15 @@ import catchErrorAsync from '../utils/catch-err-async.js';
 import { deleteOne, getMany, getOne, updateOne } from './handler-factory.js';
 
 // logged in user actions
+export const getCurrentUser = async (req, res, next) => {
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user: req.user,
+    },
+  });
+};
+
 export const updateAccount = catchErrorAsync(async (req, res, next) => {
   const user = await User.findByIdAndUpdate(
     req.user._id,
@@ -15,8 +24,6 @@ export const updateAccount = catchErrorAsync(async (req, res, next) => {
       runValidators: true,
     },
   );
-
-  console.log(user);
 
   res.status(200).json({
     status: 'sucess',
