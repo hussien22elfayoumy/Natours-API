@@ -1,7 +1,12 @@
 import Tour from '../models/tour.model.js';
-import APIFeatures from '../utils/api-features.js';
 import catchErrorAsync from '../utils/catch-err-async.js';
-import { createOne, deleteOne, getOne, updateOne } from './handler-factory.js';
+import {
+  createOne,
+  deleteOne,
+  getMany,
+  getOne,
+  updateOne,
+} from './handler-factory.js';
 
 export const aliasTopTours = (req, res, next) => {
   req.url =
@@ -10,23 +15,7 @@ export const aliasTopTours = (req, res, next) => {
   next();
 };
 
-export const getAllTours = catchErrorAsync(async (req, res, next) => {
-  const toursFeaturesQuery = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-
-  const tours = await toursFeaturesQuery.mongoQuery;
-
-  res.status(200).json({
-    message: 'sucess',
-    results: tours.length,
-    data: {
-      tours: tours,
-    },
-  });
-});
+export const getAllTours = getMany(Tour);
 
 export const createTour = createOne(Tour);
 

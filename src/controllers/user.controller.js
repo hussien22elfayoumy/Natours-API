@@ -1,6 +1,6 @@
 import User from '../models/user.model.js';
 import catchErrorAsync from '../utils/catch-err-async.js';
-import { deleteOne, getOne, updateOne } from './handler-factory.js';
+import { deleteOne, getMany, getOne, updateOne } from './handler-factory.js';
 
 // logged in user actions
 export const updateAccount = catchErrorAsync(async (req, res, next) => {
@@ -36,16 +36,7 @@ export const deactivateAccount = catchErrorAsync(async (req, res, next) => {
 });
 
 // Admin actions
-export const getAllUsers = catchErrorAsync(async (req, res, next) => {
-  const users = await User.find();
-
-  res.status(200).json({
-    status: 'sucess',
-    data: {
-      users,
-    },
-  });
-});
+export const getAllUsers = getMany(User);
 
 export const getUser = getOne(User);
 

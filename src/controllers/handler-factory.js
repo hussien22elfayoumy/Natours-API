@@ -1,3 +1,4 @@
+import APIFeatures from '../utils/api-features.js';
 import AppError from '../utils/app-error.js';
 import catchErrorAsync from '../utils/catch-err-async.js';
 
@@ -57,6 +58,29 @@ export const getOne = (Model, populateOptions) =>
       message: 'sucess',
       data: {
         data: doc,
+      },
+    });
+  });
+
+export const getMany = (Model) =>
+  catchErrorAsync(async (req, res, next) => {
+    // To allow nested GETreviews on tours
+    let filter = {};
+    if (req.params.tourId) filter = { tour: req.params.tourId };
+
+    const docsFeaturesQuery = new APIFeatures(Model.find(filter), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+
+    const docs = await docsFeaturesQuery.mongoQuery;
+
+    res.status(200).json({
+      message: 'sucess',
+      results: docs.length,
+      data: {
+        data: docs,
       },
     });
   });
