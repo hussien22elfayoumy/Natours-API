@@ -4,6 +4,7 @@ import {
   deleteUser,
   getAllUsers,
   updateAccount,
+  updateUser,
 } from '../controllers/user.controller.js';
 import {
   forgotPassword,
@@ -25,6 +26,6 @@ router.patch('/update-user', protectRoute, updateAccount);
 router.delete('/deactivate-user', protectRoute, deactivateAccount);
 
 router.route('/').get(getAllUsers);
-router.route('/:id').delete(deleteUser);
+router.route('/:id').patch(updateUser).delete(deleteUser);
 
 export default router;

@@ -1,6 +1,6 @@
 import User from '../models/user.model.js';
 import catchErrorAsync from '../utils/catch-err-async.js';
-import { deleteOne } from './handler-factory.js';
+import { deleteOne, updateOne } from './handler-factory.js';
 
 // logged in user actions
 export const updateAccount = catchErrorAsync(async (req, res, next) => {
@@ -48,3 +48,5 @@ export const getAllUsers = catchErrorAsync(async (req, res, next) => {
 });
 
 export const deleteUser = deleteOne(User);
+
+export const updateUser = updateOne(User);

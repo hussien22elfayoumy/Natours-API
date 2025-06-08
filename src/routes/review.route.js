@@ -3,6 +3,7 @@ import {
   createReview,
   deleteReview,
   getReviews,
+  updateReview,
 } from '../controllers/review.controller.js';
 import { authorize, protectRoute } from '../controllers/auth.controller.js';
 
@@ -13,6 +14,6 @@ router
   .get(getReviews)
   .post(protectRoute, authorize('user'), createReview);
 
-router.route('/:id').delete(deleteReview);
+router.route('/:id').patch(updateReview).delete(deleteReview);
 
 export default router;
