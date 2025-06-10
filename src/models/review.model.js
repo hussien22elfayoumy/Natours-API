@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import Tour from './tour.model.js';
 
 const reviewSchema = new mongoose.Schema(
   {
@@ -27,6 +28,47 @@ const reviewSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   },
 );
+
+reviewSchema.statics.calcAverageRatings = async function (tourId) {
+  const stats = await this.aggregate([
+    {
+      $match: { tour: tourId },
+    },
+    {
+      $group: {
+        _id: '$tour',
+        numRating: { $sum: 1 },
+        avgRating: { $avg: '$rating' },
+      },
+    },
+  ]);
+
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].numRating,
+      ratingsAverage: stats[0].avgRating,
+    });
+  } else {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5,
+    });
+  }
+};
+
+reviewSchema.post('save', function () {
+  // this points to current review
+  this.constructor.calcAverageRatings(this.tour);
+});
+
+reviewSchema.post(/^findOneAnd/, async (docs) => {
+  // docs is the current documeent being updated or deleted
+  // this points to the current query
+  // console.log(this.model); // return the model
+  // console.log(docs.constructor); // return the model
+
+  if (docs) await docs.constructor.calcAverageRatings(docs.tour);
+});
 
 // Populate tour and user before reterving reviews
 reviewSchema.pre(/^find/, function (next) {
