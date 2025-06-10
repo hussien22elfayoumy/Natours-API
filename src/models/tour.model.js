@@ -118,6 +118,7 @@ const tourSchema = new mongoose.Schema(
 // Apply indexes
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
+tourSchema.index({ startLocation: '2dsphere' });
 
 // NOTE: we can't use virtulas in query we cant say tours.find({durationInWeeks: 2})
 tourSchema.virtual('durationInWeeks').get(function () {

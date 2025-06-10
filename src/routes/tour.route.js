@@ -8,6 +8,7 @@ import {
   getMonthlyPlan,
   getTour,
   getTourStats,
+  getToursWithin,
   updateTour,
 } from '../controllers/tour.controller.js';
 import { authorize, protectRoute } from '../controllers/auth.controller.js';
@@ -22,6 +23,9 @@ router.route('/tours-stats').get(getTourStats);
 router
   .route('/monthly-plan/:year')
   .get(protectRoute, authorize('admin', 'lead-guide', 'guide'), getMonthlyPlan);
+router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(getToursWithin);
 router
   .route('/')
   .get(getAllTours)
