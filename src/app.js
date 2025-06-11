@@ -7,11 +7,16 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import { xss } from 'express-xss-sanitizer';
 import mongoose from 'mongoose';
+import url from 'url';
+import path from 'path';
 import tourRouter from './routes/tour.route.js';
 import userRouter from './routes/user.route.js';
 import reviewRouter from './routes/review.route.js';
 import AppError from './utils/app-error.js';
 import errorMiddleware from './middlewares/error.middleware.js';
+
+const _fileName = url.fileURLToPath(import.meta.url);
+const _dirname = path.dirname(_fileName);
 
 process.on('uncaughtException', (err) => {
   console.log('uncaught exception, Shutting down the system');
@@ -24,7 +29,14 @@ process.on('uncaughtException', (err) => {
 dotenv.config();
 const app = express();
 
+// setup the template engine
+app.set('view engine', 'pug');
+app.set('views', path.join(_dirname, 'views'));
+
 // 1) Middlewares
+// serving static files
+app.use(express.static(path.join(_dirname, '..', 'public')));
+
 // setting some sucurity headers
 app.use(helmet());
 
@@ -67,6 +79,10 @@ app.use(
 );
 
 // 2) Routes
+app.use('/', (req, res) => {
+  res.status(200).render('base');
+});
+
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
