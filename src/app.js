@@ -81,7 +81,7 @@ app.use(
 // 2) Routes
 app.use('/', (req, res) => {
   res.status(200).render('base', {
-    tour: 'The Forese Hiker',
+    tour: 'The Forest Hiker',
     name: 'Hussien',
   });
 });
