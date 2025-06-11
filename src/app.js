@@ -12,6 +12,7 @@ import path from 'path';
 import tourRouter from './routes/tour.route.js';
 import userRouter from './routes/user.route.js';
 import reviewRouter from './routes/review.route.js';
+import viewRouter from './routes/view.route.js';
 import AppError from './utils/app-error.js';
 import errorMiddleware from './middlewares/error.middleware.js';
 
@@ -79,24 +80,7 @@ app.use(
 );
 
 // 2) Routes
-app.get('/', (req, res) => {
-  res.status(200).render('base', {
-    tour: 'The Forest Hiker',
-    name: 'Hussien',
-  });
-});
-
-app.get('/overview', (req, res) => {
-  res.status(200).render('overview', {
-    title: 'All Tours',
-  });
-});
-
-app.get('/tour', (req, res) => {
-  res.status(200).render('tour', {
-    title: `The Forest Hiker`,
-  });
-});
+app.use('/', viewRouter);
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
