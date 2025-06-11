@@ -1,8 +1,18 @@
-export const getOverviewView = (req, res) => {
+import Tour from '../models/tour.model.js';
+import catchErrorAsync from '../utils/catch-err-async.js';
+
+export const getOverviewView = catchErrorAsync(async (req, res) => {
+  // 1) get the tour data fro the collection
+  const tours = await Tour.find();
+  // 2) build the template
+
+  // 3) render the the view
+
   res.status(200).render('overview', {
     title: 'All Tours',
+    tours,
   });
-};
+});
 
 export const getTourView = (req, res) => {
   res.status(200).render('tour', {

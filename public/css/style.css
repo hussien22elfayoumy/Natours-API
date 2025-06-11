@@ -1077,6 +1077,20 @@ body {
   grid-gap: 7rem;
 }
 
+@media (max-width: 1080px) {
+  .card-container {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 5rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .card-container {
+    grid-template-columns: 1fr;
+    grid-gap: 3rem;
+  }
+}
+
 .card {
   border-radius: 3px;
   overflow: hidden;
