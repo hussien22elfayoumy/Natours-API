@@ -5,14 +5,14 @@ html(lang='en')
 		meta(name='viewport', content='width=device-width, initial-scale=1.0')
 		link(rel='stylesheet', href='css/style.css')
 		link(rel='shortcut icon', href='img/favicon.png', type='image/x-icon')
-		link(rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300i,700")
-		title Natours | Exciting tours for adventurous people
+		link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato:300,300i,700')
+		title Natours | #{title ? title : 'Exciting tours for adventurous people'}
 	body
 		// HEADER
 		include _header
 		// CONTENT
-		main.main
-			h1= tour
+		block content
+			h1 This is a placeholder heading
 			
 		// FOOTER
 		include _footer

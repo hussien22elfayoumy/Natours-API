@@ -79,10 +79,22 @@ app.use(
 );
 
 // 2) Routes
-app.use('/', (req, res) => {
+app.get('/', (req, res) => {
   res.status(200).render('base', {
     tour: 'The Forest Hiker',
     name: 'Hussien',
+  });
+});
+
+app.get('/overview', (req, res) => {
+  res.status(200).render('overview', {
+    title: 'All Tours',
+  });
+});
+
+app.get('/tour', (req, res) => {
+  res.status(200).render('tour', {
+    title: `The Forest Hiker`,
   });
 });
 
