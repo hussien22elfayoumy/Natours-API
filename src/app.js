@@ -82,7 +82,7 @@ app.use(
 app.use('/', (req, res) => {
   res.status(200).render('base', {
     tour: 'The Forese Hiker',
-    name: 'jonas',
+    name: 'Hussien',
   });
 });
 
