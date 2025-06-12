@@ -21,7 +21,7 @@ export const getTourView = catchErrorAsync(async (req, res, next) => {
   });
 
   res.status(200).render('tour', {
-    title: `The Forest Hiker`,
+    title: tour.name,
     tour,
   });
 });

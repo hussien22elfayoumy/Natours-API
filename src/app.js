@@ -79,6 +79,14 @@ app.use(
   }),
 );
 
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    "script-src 'self' https://unpkg.com/leaflet@1.9.4/dist/leaflet.css https://unpkg.com/leaflet@1.9.4/dist/leaflet.js https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.8/axios.min.js;",
+  );
+  next();
+});
+
 // 2) Routes
 app.use('/', viewRouter);
 
