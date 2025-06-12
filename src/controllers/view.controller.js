@@ -25,3 +25,9 @@ export const getTourView = catchErrorAsync(async (req, res, next) => {
     tour,
   });
 });
+
+export const getLoginFormView = (req, res) => {
+  res.status(200).render('login', {
+    title: 'Login',
+  });
+};
