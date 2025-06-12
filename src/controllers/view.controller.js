@@ -14,8 +14,14 @@ export const getOverviewView = catchErrorAsync(async (req, res) => {
   });
 });
 
-export const getTourView = (req, res) => {
+export const getTourView = catchErrorAsync(async (req, res, next) => {
+  const tour = await Tour.findOne({ slug: req.params.slug }).populate({
+    path: 'reviews',
+    fields: 'review rating user',
+  });
+
   res.status(200).render('tour', {
     title: `The Forest Hiker`,
+    tour,
   });
-};
+});

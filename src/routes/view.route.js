@@ -8,6 +8,6 @@ const router = express.Router();
 
 router.get('/', getOverviewView);
 
-router.get('/tour', getTourView);
+router.get('/tours/:slug', getTourView);
 
 export default router;
