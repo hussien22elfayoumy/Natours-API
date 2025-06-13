@@ -104,6 +104,27 @@ export const protectRoute = catchErrorAsync(async (req, res, next) => {
   next();
 });
 
+// Only for rendered pages , no erros.
+export const isLoggedIn = catchErrorAsync(async (req, res, next) => {
+  // 1) Get the token and check if it there
+  const token = req.cookies['natours-jwt'];
+  if (token) {
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+    //2) check if the user is still exist
+    const freshUser = await User.findById(decoded.id);
+    if (!freshUser) return next();
+
+    // 3) check if the user changed password after the token was issued
+    if (freshUser.hasChangedPassword(decoded.iat)) return next();
+
+    // there is a logged in user pass it to the templates
+    res.locals.loggedInUser = freshUser;
+    return next();
+  }
+  next();
+});
+
 export const authorize = (...roles) =>
   catchErrorAsync(async (req, res, next) => {
     if (!roles.includes(req.user.role))

@@ -86,6 +86,7 @@ app.use((req, res, next) => {
     'Content-Security-Policy',
     "script-src 'self' https://unpkg.com/leaflet@1.9.4/dist/leaflet.css https://unpkg.com/leaflet@1.9.4/dist/leaflet.js https://unpkg.com/axios/dist/axios.min.js;",
   );
+
   next();
 });
 
