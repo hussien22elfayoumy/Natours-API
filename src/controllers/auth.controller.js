@@ -26,7 +26,7 @@ const createSendToken = (user, statuscode, res) => {
   res.cookie('natours-jwt', token, cookieOptions);
 
   res.status(statuscode).json({
-    status: 'sucess',
+    status: 'success',
     token,
     data: {
       user,

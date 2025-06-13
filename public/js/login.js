@@ -6,8 +6,13 @@ const init = () => {
         email,
         password,
       });
+
+      if (res.data.status === 'success') {
+        alert('Logged in successfully');
+        window.location.href = '/';
+      }
     } catch (err) {
-      console.log(err.response.data);
+      alert(err.response.data.message);
     }
   };
 
