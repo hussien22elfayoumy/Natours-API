@@ -1,4 +1,5 @@
 /* eslint-disable */
+import { showAlert } from './alerts';
 
 export const login = async (email, password) => {
   try {
@@ -8,10 +9,11 @@ export const login = async (email, password) => {
     });
 
     if (res.data.status === 'success') {
-      alert('Logged in successfully');
-      window.location.href = '/';
+      showAlert('success', 'Logged in successfully!');
+
+      window.setTimeout(() => (window.location.href = '/'), 500);
     }
   } catch (err) {
-    alert(err.response.data.message);
+    showAlert('error', err.response.data.message);
   }
 };

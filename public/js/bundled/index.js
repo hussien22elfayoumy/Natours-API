@@ -773,6 +773,7 @@ exports.export = function(dest, destName, get) {
 /* eslint-disable */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "login", ()=>login);
+var _alerts = require("./alerts");
 const login = async (email, password)=>{
     try {
         const res = await axios.post('http://localhost:8000/api/v1/users/login', {
@@ -780,12 +781,28 @@ const login = async (email, password)=>{
             password
         });
         if (res.data.status === 'success') {
-            alert('Logged in successfully');
-            window.location.href = '/';
+            (0, _alerts.showAlert)('success', 'Logged in successfully!');
+            window.setTimeout(()=>window.location.href = '/', 500);
         }
     } catch (err) {
-        alert(err.response.data.message);
+        (0, _alerts.showAlert)('error', err.response.data.message);
     }
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"9zm19","./alerts":"fyGTv"}],"fyGTv":[function(require,module,exports,__globalThis) {
+/* eslint-disable */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "hideAlert", ()=>hideAlert);
+parcelHelpers.export(exports, "showAlert", ()=>showAlert);
+const hideAlert = ()=>{
+    const el = document.querySelector('.alert');
+    if (el) el.parentElement.removeChild(el);
+};
+const showAlert = (type, msg)=>{
+    hideAlert();
+    const markup = `<div class="alert alert--${type}">${msg}</div>`;
+    document.querySelector('body').insertAdjacentHTML('afterbegin', markup);
+    window.setTimeout(hideAlert, 5000);
 };
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"9zm19"}]},["kAjQG","8wSN4"], "8wSN4", "parcelRequire900c", {})
