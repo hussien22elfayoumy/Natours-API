@@ -9,6 +9,7 @@ import { xss } from 'express-xss-sanitizer';
 import mongoose from 'mongoose';
 import url from 'url';
 import path from 'path';
+import cookieParser from 'cookie-parser';
 import tourRouter from './routes/tour.route.js';
 import userRouter from './routes/user.route.js';
 import reviewRouter from './routes/review.route.js';
@@ -58,6 +59,7 @@ app.use('/api', limiter);
 
 // Add the body property to the incoming reqest in express {body parser}
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 
 // Data sanitization aganist noSQL query injection
 // app.use(mongoSanitize()); doesn't work with the new version of express it mutate the query object
