@@ -1,9 +1,5 @@
 /* eslint-disable */
-window.addEventListener('DOMContentLoaded', () => {
-  const locations = JSON.parse(
-    document.getElementById('map').dataset.locations,
-  );
-
+export const displayMap = (locations) => {
   const map = L.map('map', {
     zoomControl: false,
     scrollWheelZoom: true,
@@ -45,4 +41,4 @@ window.addEventListener('DOMContentLoaded', () => {
   const bounds = L.latLngBounds(points).pad(0.5);
 
   map.fitBounds(bounds);
-});
+};
