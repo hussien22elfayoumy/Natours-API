@@ -799,7 +799,7 @@ const logout = async ()=>{
         const res = await axios.get('http://localhost:8000/api/v1/users/logout');
         console.log(res);
         res.data.status = 'success';
-        location.reload(true);
+        location.assign('/');
     } catch (err) {
         (0, _alerts.showAlert)('error', 'Error logging out! Try again.');
     }

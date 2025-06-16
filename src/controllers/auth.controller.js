@@ -112,6 +112,7 @@ export const protectRoute = catchErrorAsync(async (req, res, next) => {
 
   //Grant access to protectd route
   req.user = freshUser;
+  res.locals.loggedInUser = freshUser;
   next();
 });
 

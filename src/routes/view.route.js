@@ -3,18 +3,20 @@ import {
   getLoginFormView,
   getOverviewView,
   getTourView,
+  getUserView,
 } from '../controllers/view.controller.js';
-import { isLoggedIn } from '../controllers/auth.controller.js';
+import { isLoggedIn, protectRoute } from '../controllers/auth.controller.js';
 
 const router = express.Router();
 
 // Check if the user is logged in and pass it to next templates
-router.use(isLoggedIn);
 
-router.get('/', getOverviewView);
+router.get('/', isLoggedIn, getOverviewView);
 
-router.get('/tours/:slug', getTourView);
+router.get('/tours/:slug', isLoggedIn, getTourView);
 
-router.get('/login', getLoginFormView);
+router.get('/login', isLoggedIn, getLoginFormView);
+
+router.get('/user', protectRoute, getUserView);
 
 export default router;

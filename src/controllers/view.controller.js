@@ -35,3 +35,9 @@ export const getLoginFormView = (req, res) => {
     title: 'Login',
   });
 };
+
+export const getUserView = (req, res) => {
+  res.status(200).render('account', {
+    title: 'Account',
+  });
+};
