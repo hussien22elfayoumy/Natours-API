@@ -59,6 +59,7 @@ app.use('/api', limiter);
 
 // Add the body property to the incoming reqest in express {body parser}
 app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' })); // parse data comming from form urlencoded form
 app.use(cookieParser());
 
 // Data sanitization aganist noSQL query injection

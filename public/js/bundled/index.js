@@ -668,17 +668,19 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 },{}],"8wSN4":[function(require,module,exports,__globalThis) {
 /* eslint-disable */ var _leaflet = require("./leaflet");
 var _login = require("./login");
+var _updateSettings = require("./updateSettings");
 const init = ()=>{
     // Iinit map
     const map = document.getElementById('map');
-    const form = document.querySelector('.form');
+    const userLoginForm = document.querySelector('.user-login-form');
     const logoutBtn = document.querySelector('.nav__el--logout');
+    const userDataForm = document.querySelector('.form-user-data');
     if (map) {
         const locations = JSON.parse(map.dataset.locations);
         (0, _leaflet.displayMap)(locations);
     }
-    // Login functionality
-    if (form) form.addEventListener('submit', (e)=>{
+    // Login
+    if (userLoginForm) userLoginForm.addEventListener('submit', (e)=>{
         e.preventDefault();
         const email = document.querySelector('#email').value;
         const password = document.querySelector('#password').value;
@@ -688,10 +690,20 @@ const init = ()=>{
     if (logoutBtn) logoutBtn.addEventListener('click', ()=>{
         (0, _login.logout)();
     });
+    // updata user settings
+    if (userDataForm) userDataForm.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        (0, _updateSettings.updateSettings)({
+            name,
+            email
+        }, 'data');
+    });
 };
 document.addEventListener('DOMContentLoaded', init);
 
-},{"./leaflet":"lFc9O","./login":"cZYNq"}],"lFc9O":[function(require,module,exports,__globalThis) {
+},{"./leaflet":"lFc9O","./login":"cZYNq","./updateSettings":"c75ha"}],"lFc9O":[function(require,module,exports,__globalThis) {
 /* eslint-disable */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "displayMap", ()=>displayMap);
@@ -821,6 +833,25 @@ const showAlert = (type, msg)=>{
     window.setTimeout(hideAlert, 5000);
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"9zm19"}]},["kAjQG","8wSN4"], "8wSN4", "parcelRequire900c", {})
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"9zm19"}],"c75ha":[function(require,module,exports,__globalThis) {
+/* eslint-disable */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "updateSettings", ()=>updateSettings);
+var _alerts = require("./alerts");
+const updateSettings = async (data, type)=>{
+    try {
+        const url = type === 'password' ? 'http://localhost:8000/api/v1/users/update-password' : 'http://localhost:8000/api/v1/users/update-user';
+        const res = await axios({
+            method: 'PATCH',
+            url,
+            data
+        });
+        if (res.data.status === 'success') (0, _alerts.showAlert)('success', `${type.toUpperCase()} updated successfully!`);
+    } catch (err) {
+        (0, _alerts.showAlert)('error', err.response.data.message);
+    }
+};
+
+},{"./alerts":"fyGTv","@parcel/transformer-js/src/esmodule-helpers.js":"9zm19"}]},["kAjQG","8wSN4"], "8wSN4", "parcelRequire900c", {})
 
 //# sourceMappingURL=index.js.map
