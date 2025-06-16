@@ -226,7 +226,7 @@ export const updatePassword = catchErrorAsync(async (req, res, next) => {
 
   // 2) Check if the current password is correct
   const isPasswordCorrect = await user.checkPassword(
-    req.body.currentPassword,
+    req.body.passwordCurrent,
     user.password,
   );
 

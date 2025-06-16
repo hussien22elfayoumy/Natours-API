@@ -13,6 +13,7 @@ export const getCurrentUser = async (req, res, next) => {
 };
 
 export const updateAccount = catchErrorAsync(async (req, res, next) => {
+  console.log(req.body);
   const user = await User.findByIdAndUpdate(
     req.user._id,
     {

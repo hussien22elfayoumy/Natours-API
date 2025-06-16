@@ -675,6 +675,7 @@ const init = ()=>{
     const userLoginForm = document.querySelector('.user-login-form');
     const logoutBtn = document.querySelector('.nav__el--logout');
     const userDataForm = document.querySelector('.form-user-data');
+    const userPasswordForm = document.querySelector('.form-user-settings');
     if (map) {
         const locations = JSON.parse(map.dataset.locations);
         (0, _leaflet.displayMap)(locations);
@@ -691,14 +692,32 @@ const init = ()=>{
         (0, _login.logout)();
     });
     // updata user settings
-    if (userDataForm) userDataForm.addEventListener('submit', (e)=>{
+    if (userDataForm) userDataForm.addEventListener('submit', async (e)=>{
         e.preventDefault();
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
-        (0, _updateSettings.updateSettings)({
+        document.querySelector('.btn--save-settings').textContent = 'Updating...';
+        await (0, _updateSettings.updateSettings)({
             name,
             email
         }, 'data');
+        document.querySelector('.btn--save-settings').textContent = 'Save settings';
+    });
+    if (userPasswordForm) userPasswordForm.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        userPasswordForm.querySelector('.btn--save-password').textContent = 'Updating...';
+        const passwordCurrent = userPasswordForm.querySelector('#password-current').value;
+        const password = userPasswordForm.querySelector('#password').value;
+        const passwordConfirm = userPasswordForm.querySelector('#password-confirm').value;
+        await (0, _updateSettings.updateSettings)({
+            passwordCurrent,
+            password,
+            passwordConfirm
+        }, 'password');
+        userPasswordForm.querySelector('.btn--save-password').textContent = 'Save password';
+        userPasswordForm.querySelector('#password-current').value = '';
+        userPasswordForm.querySelector('#password').value = '';
+        userPasswordForm.querySelector('#password-confirm').value = '';
     });
 };
 document.addEventListener('DOMContentLoaded', init);
@@ -841,11 +860,7 @@ var _alerts = require("./alerts");
 const updateSettings = async (data, type)=>{
     try {
         const url = type === 'password' ? 'http://localhost:8000/api/v1/users/update-password' : 'http://localhost:8000/api/v1/users/update-user';
-        const res = await axios({
-            method: 'PATCH',
-            url,
-            data
-        });
+        const res = await axios.patch(url, data);
         if (res.data.status === 'success') (0, _alerts.showAlert)('success', `${type.toUpperCase()} updated successfully!`);
     } catch (err) {
         (0, _alerts.showAlert)('error', err.response.data.message);
