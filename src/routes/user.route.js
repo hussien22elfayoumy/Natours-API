@@ -12,6 +12,7 @@ import {
   authorize,
   forgotPassword,
   login,
+  logout,
   protectRoute,
   resetPassword,
   singup,
@@ -22,6 +23,8 @@ const router = express.Router();
 
 router.post('/signup', singup);
 router.post('/login', login);
+router.get('/logout', logout);
+
 router.post('/forgot-password', forgotPassword);
 router.patch('/reset-password/:token', resetPassword);
 

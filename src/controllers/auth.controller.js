@@ -67,6 +67,17 @@ export const login = catchErrorAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
+export const logout = (req, res) => {
+  res.cookie('natours-jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+
+  res.status(200).json({
+    status: 'success',
+  });
+};
+
 export const protectRoute = catchErrorAsync(async (req, res, next) => {
   // 1) Get the token and check if it there
   let token;
@@ -105,25 +116,32 @@ export const protectRoute = catchErrorAsync(async (req, res, next) => {
 });
 
 // Only for rendered pages , no erros.
-export const isLoggedIn = catchErrorAsync(async (req, res, next) => {
+export const isLoggedIn = async (req, res, next) => {
   // 1) Get the token and check if it there
-  const token = req.cookies['natours-jwt'];
-  if (token) {
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  try {
+    const token = req.cookies['natours-jwt'];
+    if (token) {
+      const decoded = await promisify(jwt.verify)(
+        token,
+        process.env.JWT_SECRET,
+      );
 
-    //2) check if the user is still exist
-    const freshUser = await User.findById(decoded.id);
-    if (!freshUser) return next();
+      //2) check if the user is still exist
+      const freshUser = await User.findById(decoded.id);
+      if (!freshUser) return next();
 
-    // 3) check if the user changed password after the token was issued
-    if (freshUser.hasChangedPassword(decoded.iat)) return next();
+      // 3) check if the user changed password after the token was issued
+      if (freshUser.hasChangedPassword(decoded.iat)) return next();
 
-    // there is a logged in user pass it to the templates
-    res.locals.loggedInUser = freshUser;
+      // there is a logged in user pass it to the templates
+      res.locals.loggedInUser = freshUser;
+      return next();
+    }
+  } catch (err) {
     return next();
   }
   next();
-});
+};
 
 export const authorize = (...roles) =>
   catchErrorAsync(async (req, res, next) => {
