@@ -1,6 +1,27 @@
+import multer from 'multer';
 import User from '../models/user.model.js';
 import catchErrorAsync from '../utils/catch-err-async.js';
 import { deleteOne, getMany, getOne, updateOne } from './handler-factory.js';
+import AppError from '../utils/app-error.js';
+
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/img/users');
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split('/')[1];
+    cb(null, `user-${req.user._id}-${Date.now()}.${ext}`);
+  },
+});
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) cb(null, true);
+  else cb(new AppError('Please ppload only images', 404), false);
+};
+
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+
+export const uploadUserPhoto = upload.single('photo');
 
 // logged in user actions
 export const getCurrentUser = async (req, res, next) => {

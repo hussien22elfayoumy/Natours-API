@@ -828,7 +828,6 @@ const login = async (email, password)=>{
 const logout = async ()=>{
     try {
         const res = await axios.get('http://localhost:8000/api/v1/users/logout');
-        console.log(res);
         res.data.status = 'success';
         location.assign('/');
     } catch (err) {
