@@ -5,6 +5,7 @@ import {
   getAllUsers,
   getCurrentUser,
   getUser,
+  resizeUserPhoto,
   updateAccount,
   updateUser,
   uploadUserPhoto,
@@ -34,7 +35,7 @@ router.use(protectRoute);
 
 router.get('/current', getCurrentUser);
 router.patch('/update-password', updatePassword);
-router.patch('/update-user', uploadUserPhoto, updateAccount);
+router.patch('/update-user', uploadUserPhoto, resizeUserPhoto, updateAccount);
 router.delete('/deactivate-user', deactivateAccount);
 
 router.use(authorize('admin'));
