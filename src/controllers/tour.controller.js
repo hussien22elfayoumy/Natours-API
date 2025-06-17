@@ -1,3 +1,4 @@
+import multer from 'multer';
 import Tour from '../models/tour.model.js';
 import AppError from '../utils/app-error.js';
 import catchErrorAsync from '../utils/catch-err-async.js';
@@ -8,6 +9,25 @@ import {
   getOne,
   updateOne,
 } from './handler-factory.js';
+
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) cb(null, true);
+  else cb(new AppError('Please ppload only images', 404), false);
+};
+
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+
+export const uploadTourImages = upload.fields([
+  { name: 'imageCover', maxCount: 1 },
+  { name: 'images', maxCount: 3 },
+]);
+
+export const resizeTourImages = (req, res, next) => {
+  console.log(req.files);
+  next();
+};
 
 export const aliasTopTours = (req, res, next) => {
   req.url =

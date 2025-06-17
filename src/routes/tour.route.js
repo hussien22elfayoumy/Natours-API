@@ -10,7 +10,9 @@ import {
   getTour,
   getTourStats,
   getToursWithin,
+  resizeTourImages,
   updateTour,
+  uploadTourImages,
 } from '../controllers/tour.controller.js';
 import { authorize, protectRoute } from '../controllers/auth.controller.js';
 import reviewRouter from './review.route.js';
@@ -37,7 +39,13 @@ router
 router
   .route('/:id')
   .get(getTour)
-  .patch(protectRoute, authorize('admin', 'lead-guide'), updateTour)
+  .patch(
+    protectRoute,
+    authorize('admin', 'lead-guide'),
+    uploadTourImages,
+    resizeTourImages,
+    updateTour,
+  )
   .delete(protectRoute, authorize('admin', 'lead-guide'), deleteTour);
 
 export default router;
