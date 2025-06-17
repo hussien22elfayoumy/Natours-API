@@ -1,4 +1,5 @@
 import express from 'express';
+import multer from 'multer';
 import {
   deactivateAccount,
   deleteUser,
@@ -20,6 +21,7 @@ import {
 } from '../controllers/auth.controller.js';
 
 const router = express.Router();
+const upload = multer({ dest: 'public/img/users' });
 
 router.post('/signup', singup);
 router.post('/login', login);
@@ -33,7 +35,7 @@ router.use(protectRoute);
 
 router.get('/current', getCurrentUser);
 router.patch('/update-password', updatePassword);
-router.patch('/update-user', updateAccount);
+router.patch('/update-user', upload.single('photo'), updateAccount);
 router.delete('/deactivate-user', deactivateAccount);
 
 router.use(authorize('admin'));
