@@ -18,8 +18,14 @@ export default class Email {
   // 1) Create a transporter
   newTransporter() {
     if (process.env.NODE_ENV === 'production') {
-      // use Sendgrid
-      return 1;
+      return nodemailer.createTransport({
+        host: process.env.BREVO_HOST,
+        port: process.env.BREVO_PORT,
+        auth: {
+          user: process.env.BREVO_LOGIN,
+          pass: process.env.BREVO_PASSWORD,
+        },
+      });
     }
 
     return nodemailer.createTransport({
