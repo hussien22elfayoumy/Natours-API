@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import pug from 'pug';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import htmlToText from 'html-to-text';
+import { convert } from 'html-to-text';
 
 const _fileName = fileURLToPath(import.meta.url);
 const _dirname = dirname(_fileName);
@@ -35,7 +35,7 @@ export default class Email {
   // 2) Send actual email
   async send(template, subject) {
     // 1) Render HTML based on a pug template (generate)
-    const html = pug.render(`${_dirname}/../views/emails/${template}.pug`, {
+    const html = pug.renderFile(`${_dirname}/../views/emails/${template}.pug`, {
       firstName: this.firstName,
       subject: this.subject,
       url: this.url,
@@ -47,7 +47,7 @@ export default class Email {
       to: this.to,
       subject,
       html,
-      text: htmlToText.convert(html),
+      text: convert(html),
     };
 
     // 3) Create a transport and send email

@@ -4,7 +4,7 @@ import crypto from 'crypto';
 import User from '../models/user.model.js';
 import catchErrorAsync from '../utils/catch-err-async.js';
 import AppError from '../utils/app-error.js';
-import sendEmail from '../utils/send-email.js';
+import Email from '../utils/send-email.js';
 
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -43,8 +43,13 @@ export const singup = catchErrorAsync(async (req, res, next) => {
     passwordChangedAt: req.body.passwordChangedAt,
   });
 
-  // loggin the new  user in as soon as he signup
+  const url = `${req.protocol}://${req.get('host')}/user`;
+  console.log(url);
 
+  // Send a welcome email
+  await new Email(newUser, url).sendWelcome();
+
+  // loggin the new  user in as soon as he signup
   createSendToken(newUser, 201, res);
 });
 
@@ -168,11 +173,11 @@ export const forgotPassword = catchErrorAsync(async (req, res, next) => {
   const resetURL = `${req.protocol}://${req.get('host')}/api/v1/reset-password/${resetToken}`;
 
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'Follow this link to reset password (valid for 10mins)',
-      text: resetURL,
-    });
+    // await sendEmail({
+    //   email: user.email,
+    //   subject: 'Follow this link to reset password (valid for 10mins)',
+    //   text: resetURL,
+    // });
 
     res.status(200).json({
       status: 'sucess',
