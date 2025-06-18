@@ -18,7 +18,7 @@ export default class Email {
   // 1) Create a transporter
   newTransporter() {
     if (process.env.NODE_ENV === 'production') {
-      // use Sandgrid
+      // use Sendgrid
       return 1;
     }
 
@@ -57,5 +57,12 @@ export default class Email {
   // 3) Custom email
   async sendWelcome() {
     await this.send('welcome', 'Welcome to the Natuors family.');
+  }
+
+  async sendPasswordReset() {
+    await this.send(
+      'passwordReset',
+      'Follow this link to reset password (valid for 10mins)',
+    );
   }
 }

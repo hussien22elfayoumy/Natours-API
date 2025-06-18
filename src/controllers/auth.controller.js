@@ -44,7 +44,6 @@ export const singup = catchErrorAsync(async (req, res, next) => {
   });
 
   const url = `${req.protocol}://${req.get('host')}/user`;
-  console.log(url);
 
   // Send a welcome email
   await new Email(newUser, url).sendWelcome();
@@ -169,15 +168,11 @@ export const forgotPassword = catchErrorAsync(async (req, res, next) => {
   const resetToken = user.createResetPasswordToken();
   await user.save({ validateBeforeSave: false }); // save the changed in createReasetpasswordToken to the database
 
-  // Send token to user email
-  const resetURL = `${req.protocol}://${req.get('host')}/api/v1/reset-password/${resetToken}`;
-
   try {
-    // await sendEmail({
-    //   email: user.email,
-    //   subject: 'Follow this link to reset password (valid for 10mins)',
-    //   text: resetURL,
-    // });
+    // Send token to user email
+    const resetURL = `${req.protocol}://${req.get('host')}/api/v1/reset-password/${resetToken}`;
+
+    await new Email(user, resetURL).sendPasswordReset();
 
     res.status(200).json({
       status: 'sucess',
