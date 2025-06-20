@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { displayMap } from './leaflet';
 import { login, logout } from './login';
+import { bookTour } from './stripe';
 import { updateSettings } from './updateSettings';
 
 const init = () => {
@@ -10,6 +11,7 @@ const init = () => {
   const logoutBtn = document.querySelector('.nav__el--logout');
   const userDataForm = document.querySelector('.form-user-data');
   const userPasswordForm = document.querySelector('.form-user-settings');
+  const bookTourBtn = document.querySelector('#book-tour');
 
   if (map) {
     const locations = JSON.parse(map.dataset.locations);
@@ -75,6 +77,15 @@ const init = () => {
       userPasswordForm.querySelector('#password').value = '';
       userPasswordForm.querySelector('#password-confirm').value = '';
     });
+
+  if (bookTourBtn) {
+    bookTourBtn.addEventListener('click', async (e) => {
+      e.target.textContent = 'Processing...';
+      const tourId = e.target.dataset.tourId;
+      await bookTour(tourId);
+      e.target.textContent = 'Book tour now!';
+    });
+  }
 };
 
 document.addEventListener('DOMContentLoaded', init);
