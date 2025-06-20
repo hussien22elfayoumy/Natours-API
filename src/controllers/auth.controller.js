@@ -55,7 +55,6 @@ export const singup = catchErrorAsync(async (req, res, next) => {
 export const login = catchErrorAsync(async (req, res, next) => {
   // const newUser = await User.create(req.body);
   const { email, password } = req.body;
-  console.log(typeof email);
 
   // 1) check if email and password exist
   if (!email || !password || typeof email !== 'string')

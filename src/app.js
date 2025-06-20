@@ -1,15 +1,17 @@
+import url from 'url';
+import path from 'path';
+import qs from 'qs';
 import dotenv from 'dotenv';
 import express from 'express';
 import morgan from 'morgan';
-import qs from 'qs';
-import { rateLimit } from 'express-rate-limit';
+import mongoose from 'mongoose';
 import helmet from 'helmet';
 import hpp from 'hpp';
+import { rateLimit } from 'express-rate-limit';
 import { xss } from 'express-xss-sanitizer';
-import mongoose from 'mongoose';
-import url from 'url';
-import path from 'path';
 import cookieParser from 'cookie-parser';
+import compression from 'compression';
+
 import tourRouter from './routes/tour.route.js';
 import userRouter from './routes/user.route.js';
 import reviewRouter from './routes/review.route.js';
@@ -82,6 +84,8 @@ app.use(
     ],
   }),
 );
+
+app.use(compression());
 
 app.use((req, res, next) => {
   res.setHeader(

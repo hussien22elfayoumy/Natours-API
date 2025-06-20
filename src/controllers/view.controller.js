@@ -49,10 +49,8 @@ export const getUserToursView = catchErrorAsync(async (req, res, next) => {
 
   // 2) find all tours for those	 bookings
   const tourIds = bookings.map((booking) => booking.tour);
-  console.log(tourIds);
 
   const tours = await Tour.find({ _id: { $in: tourIds } });
-  console.log(tours);
 
   res.status(200).render('overview', {
     title: 'User Tours',
