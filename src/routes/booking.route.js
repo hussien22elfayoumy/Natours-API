@@ -1,9 +1,23 @@
 import express from 'express';
-import { protectRoute } from '../controllers/auth.controller.js';
-import { getCheckoutSession } from '../controllers/booking.controller.js';
+import { authorize, protectRoute } from '../controllers/auth.controller.js';
+import {
+  createBooking,
+  deleteBooking,
+  getBooking,
+  getBookings,
+  getCheckoutSession,
+  updateBooking,
+} from '../controllers/booking.controller.js';
 
 const router = express.Router();
 
-router.get('/checkout-session/:tourId', protectRoute, getCheckoutSession);
+router.use(protectRoute);
+
+router.get('/checkout-session/:tourId', getCheckoutSession);
+
+router.use(authorize('admin', 'lead-guide'));
+
+router.route('/').get(getBookings).post(createBooking);
+router.route('/:id').get(getBooking).patch(updateBooking).delete(deleteBooking);
 
 export default router;

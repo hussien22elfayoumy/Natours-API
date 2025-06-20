@@ -4,6 +4,13 @@ import catchErrorAsync from '../utils/catch-err-async.js';
 import Tour from '../models/tour.model.js';
 import Booking from '../models/booking.model.js';
 import AppError from '../utils/app-error.js';
+import {
+  createOne,
+  deleteOne,
+  getMany,
+  getOne,
+  updateOne,
+} from './handler-factory.js';
 
 dotenv.config();
 
@@ -56,3 +63,9 @@ export const createBookingCheckout = catchErrorAsync(async (req, res, next) => {
 
   res.redirect(req.originalUrl.split('?')[0]);
 });
+
+export const createBooking = createOne(Booking);
+export const getBookings = getMany(Booking);
+export const getBooking = getOne(Booking);
+export const updateBooking = updateOne(Booking);
+export const deleteBooking = deleteOne(Booking);
