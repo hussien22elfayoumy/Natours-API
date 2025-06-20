@@ -1,3 +1,4 @@
+import Booking from '../models/booking.model.js';
 import Tour from '../models/tour.model.js';
 import AppError from '../utils/app-error.js';
 import catchErrorAsync from '../utils/catch-err-async.js';
@@ -41,3 +42,20 @@ export const getUserView = (req, res) => {
     title: 'Account',
   });
 };
+
+export const getUserToursView = catchErrorAsync(async (req, res, next) => {
+  // 1) find all bookings
+  const bookings = await Booking.find({ user: req.user._id });
+
+  // 2) find all tours for those	 bookings
+  const tourIds = bookings.map((booking) => booking.tour);
+  console.log(tourIds);
+
+  const tours = await Tour.find({ _id: { $in: tourIds } });
+  console.log(tours);
+
+  res.status(200).render('overview', {
+    title: 'User Tours',
+    tours,
+  });
+});
