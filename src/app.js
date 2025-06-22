@@ -11,6 +11,7 @@ import { rateLimit } from 'express-rate-limit';
 import { xss } from 'express-xss-sanitizer';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
+import cors from 'cors';
 
 import tourRouter from './routes/tour.route.js';
 import userRouter from './routes/user.route.js';
@@ -39,6 +40,13 @@ app.set('view engine', 'pug');
 app.set('views', path.join(_dirname, 'views'));
 
 // 1) Middlewares
+
+// Enable all cors requests
+app.use(cors());
+
+// Enabling CORS Pre-Flight complex CORS request is one that uses an HTTP verb other than GET/HEAD/POST
+app.options('*', cors()); // include before other routes
+
 // serving static files
 app.use(express.static(path.join(_dirname, '..', 'public')));
 
