@@ -11,19 +11,16 @@ const signToken = (id) =>
     expiresIn: process.env.JWT_EXP,
   });
 
-const createSendToken = (user, statuscode, res) => {
+const createSendToken = (user, statuscode, req, res) => {
   const token = signToken(user._id);
 
-  const cookieOptions = {
+  res.cookie('natours-jwt', token, {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXP * 24 * 60 * 60 * 1000,
     ),
     httpOnly: true,
-  };
-
-  if (process.env.NODE_ENV === 'production') cookieOptions.scure = true;
-
-  res.cookie('natours-jwt', token, cookieOptions);
+    secure: req.secure,
+  });
 
   res.status(statuscode).json({
     status: 'success',
@@ -49,7 +46,7 @@ export const singup = catchErrorAsync(async (req, res, next) => {
   await new Email(newUser, url).sendWelcome();
 
   // loggin the new  user in as soon as he signup
-  createSendToken(newUser, 201, res);
+  createSendToken(newUser, 201, req, res);
 });
 
 export const login = catchErrorAsync(async (req, res, next) => {
@@ -67,7 +64,7 @@ export const login = catchErrorAsync(async (req, res, next) => {
     return next(new AppError('Invalid Email or Password', 401)); // 401 == unautorize
 
   // 3) if Ok send token to the client
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 
 export const logout = (req, res) => {
